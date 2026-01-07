@@ -9,19 +9,36 @@ import ballImgSrc from '../assets/img/ball.png';
 class Game {
     //context de dessin canvas
     ctx;
+    //Images 
+    ballImg;
 
     // temporaire position de la balle 
     ballX = 400;
     ballY = 300;
+    ballSpeed = 10;
+    ballVelocity ={
+        x: this.ballSpeed * Math.cos(Math.PI / 6) ,
+        y: -1 * this.ballSpeed * Math.sin(Math.PI / 6)
+
+    };
+    
+
+    
 
 
     start() {
         console.log("jeu demarré");
+        // initialisation de l'interface html
         this.initHtmlUI();
+        // initialisation des objets du jeu
+        this.initGameObjects();
+        // demarrage de la boucle de jeu
         requestAnimationFrame(this.loop.bind(this));
+        //apres la boucle de jeu
 
 
-        
+
+
     }
 
     // methodes "privees"
@@ -41,22 +58,40 @@ class Game {
         // recuperation du context de dessin 
         this.ctx = elCanvas.getContext('2d');
     }
+
+    // mise en places des objets du jeu sur la scene 
+    initGameObjects() {
+        // 1 on cree une balise html img qui ne sera jamais ajoutee au dom 
+        this.ballImg = new Image();
+        // 2 on recupere le nom de l'image
+        this.ballImg.src = ballImgSrc;
+        // 3 on demande au contexte de dessin de dessiner limage une fois quelle est chargée
+        // une fois limage chargée on peut la dessiner 
+        this.ctx.drawImage(this.ballImg, this.ballX, this.ballY);
+
+
+    }
+
+
     // boucle de jeu
     loop() {
-        
-        // temporaire :dessin de la balle a partir dune image 
-        // 1 on cree une balise html img qui ne sera jamais ajoutee au dom 
-        const ballImg = new Image();
-        // 2 on recupere le nom de l'image
-        ballImg.src = ballImgSrc;
-        // 3 on demande au contexte de dessin de dessiner limage une fois quelle est chargée
-        ballImg.addEventListener('load', () => {
-            // une fois limage chargée on peut la dessiner 
-            this.ctx.drawImage(ballImg, this.ballX, this.ballY  );
-        });
+        // effacement de la scene
+        this.ctx.clearRect(0, 0, 800, 600);
+
         // mise a jour position de la balle
-        this.ballX ++;
-        this.ballY --;
+        this.ballX+= this.ballVelocity.x;
+        this.ballY+= this.ballVelocity.y;
+        //TODO : Detections des collisions 
+        // collision avec le cote droite ou gauche de la scene 
+        if(this.ballX +20>=800 || this.ballX <= 0 ){
+            this.ballVelocity.x *=-1;
+        }
+        // collision avec le cote haut ou bas de la scene
+        if(this.ballY +20>=600 || this.ballY <= 0 ){
+            this.ballVelocity.y *=-1;
+        }
+
+        this.ctx.drawImage(this.ballImg, this.ballX, this.ballY);
 
         // appel de la frame suivante 
         requestAnimationFrame(this.loop.bind(this));
