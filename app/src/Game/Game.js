@@ -10,20 +10,17 @@ class Game {
     //context de dessin canvas
     ctx;
 
+    // temporaire position de la balle 
+    ballX = 400;
+    ballY = 300;
+
 
     start() {
         console.log("jeu demarré");
         this.initHtmlUI();
+        requestAnimationFrame(this.loop.bind(this));
 
-        // temporaire :dessin de la balle a partir dune image 
-        // 1 on cree une balise html img qui ne sera jamais ajoutee au dom 
-        const ballImg = new Image();
-        ballImg.src = ballImgSrc;
-        
-        ballImg.addEventListener('load', () => {
-            // une fois limage chargée on peut la dessiner 
-            this.ctx.drawImage(ballImg, 400, 300 , 40, 40);
-        });
+
         
     }
 
@@ -43,6 +40,26 @@ class Game {
 
         // recuperation du context de dessin 
         this.ctx = elCanvas.getContext('2d');
+    }
+    // boucle de jeu
+    loop() {
+        
+        // temporaire :dessin de la balle a partir dune image 
+        // 1 on cree une balise html img qui ne sera jamais ajoutee au dom 
+        const ballImg = new Image();
+        // 2 on recupere le nom de l'image
+        ballImg.src = ballImgSrc;
+        // 3 on demande au contexte de dessin de dessiner limage une fois quelle est chargée
+        ballImg.addEventListener('load', () => {
+            // une fois limage chargée on peut la dessiner 
+            this.ctx.drawImage(ballImg, this.ballX, this.ballY  );
+        });
+        // mise a jour position de la balle
+        this.ballX ++;
+        this.ballY --;
+
+        // appel de la frame suivante 
+        requestAnimationFrame(this.loop.bind(this));
     }
     // fonction  de test 
     //drawTestCircle() {
