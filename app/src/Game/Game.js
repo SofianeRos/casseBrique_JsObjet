@@ -1,6 +1,9 @@
 // Import de la feuille de style
 import '../assets/css/style.css';
 
+// import sprite de la balle
+import ballImgSrc from '../assets/img/ball.png';
+
 
 
 class Game {
@@ -11,6 +14,17 @@ class Game {
     start() {
         console.log("jeu demarré");
         this.initHtmlUI();
+
+        // temporaire :dessin de la balle a partir dune image 
+        // 1 on cree une balise html img qui ne sera jamais ajoutee au dom 
+        const ballImg = new Image();
+        ballImg.src = ballImgSrc;
+        
+        ballImg.addEventListener('load', () => {
+            // une fois limage chargée on peut la dessiner 
+            this.ctx.drawImage(ballImg, 400, 300 , 40, 40);
+        });
+        
     }
 
     // methodes "privees"
